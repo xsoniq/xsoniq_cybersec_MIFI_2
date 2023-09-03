@@ -1,0 +1,26 @@
+version: "3.9"
+services:
+  asko_database:
+    #build: ./build/mysql
+    image: 'asko_database'
+    container_name: database
+    command: '--init-file /data/application/init.sql'
+    environment:
+      MYSQL_ROOT_PASSWORD: admin
+      MYSQL_DATABASE: music
+    volumes:
+      - './dz1/dbfile:/var/lib/mysql'
+      - './dz1/init.sql:/data/application/init.sql'
+    ports:
+      - "3306:3306"
+    restart: always
+  asko_server:
+    #build: ./build/php
+    image: 'asko_server'
+    container_name: server
+    ports:
+      - "80:80"
+    volumes:
+      - './dz1/dbfile/src:/var/www/html'
+    depends_on:
+    - asko_database
